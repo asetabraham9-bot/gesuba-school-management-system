@@ -1,0 +1,13 @@
+# Logs
+*.log
+
+# Node dependencies
+node_modules/
+.env
+.env.*
+
+# Build output
+/dist/
+
+# Re-include important file
+!important.log
