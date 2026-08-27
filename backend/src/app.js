@@ -6,6 +6,7 @@ import studentRoutes from "./modules/students/student.routes.js";
 import teacherRoutes from "./modules/teachers/teacher.routes.js";
 import gradeRoutes from "./modules/academic/grades/grade.routes.js";
 import sectionRoutes from "./modules/academic/sections/section.routes.js";
+import subjectRoutes from "./modules/academic/subjects/subject.routes.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/grades", gradeRoutes);
 app.use("/api/sections", sectionRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {
