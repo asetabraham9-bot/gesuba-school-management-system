@@ -1,6 +1,7 @@
 import {
   createStudent,
   createTeacher,
+  createSchoolAdmin,
   registerParent,
   getAllUsers,
   getUserById,
@@ -31,6 +32,26 @@ export const createTeacherController = async (req, res, next) => {
       success: true,
       message: "Teacher account created successfully",
       data: teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createSchoolAdminController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const schoolAdmin = await createSchoolAdmin(
+      req.body
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "School Admin created successfully",
+      data: schoolAdmin,
     });
   } catch (error) {
     next(error);
@@ -88,7 +109,8 @@ export const updateUserController = async ( req, res, next) => {
   try {
     const user = await updateUser(
       req.params.userId,
-      req.body
+      req.body,
+      req.user
     );
 
     res.status(200).json({
@@ -115,7 +137,8 @@ export const updateUserStatusController = async (req, res, next) => {
 
     const user = await updateUserStatus(
       req.params.userId,
-      isActive
+      isActive,
+      req.user
     );
 
     res.status(200).json({
@@ -134,7 +157,8 @@ export const updateUserStatusController = async (req, res, next) => {
 export const deleteUserController = async ( req, res, next) => {
   try {
     const user = await deleteUser(
-      req.params.userId
+      req.params.userId,
+      req.user,
     );
 
     res.status(200).json({

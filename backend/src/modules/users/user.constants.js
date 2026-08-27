@@ -13,3 +13,11 @@ export const USER_ID_PREFIXES = Object.freeze({
   PARENT: "GGSS.PAR",
   SYSTEM_ADMIN: "GGSS.SYADM",
 });
+
+export const ROLE_LEVELS = {
+  SYSTEM_ADMIN: 100,
+  SCHOOL_ADMIN: 80,
+  TEACHER: 50,
+  STUDENT: 30,
+  PARENT: 30,
+};

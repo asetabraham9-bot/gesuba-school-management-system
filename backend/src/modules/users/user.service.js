@@ -89,6 +89,81 @@ export const createTeacher = async ({
 };
 
 /**
+ * Create a schoolAdmin account. - by SystemAdmin
+ */
+export const createSchoolAdmin = async ({
+  fullName,
+  email,
+  phone,
+  password,
+}) => {
+  if (!fullName || !email || !password) {
+    throw new AppError(
+      "Full name, email, and password are required",
+      400
+    );
+  }
+
+  if (password.length < 8) {
+    throw new AppError(
+      "Password must be at least 8 characters long",
+      400
+    );
+  }
+
+  const normalizedEmail = email
+    .trim()
+    .toLowerCase();
+
+  const existingUser = await User.findOne({
+    email: normalizedEmail,
+    isDeleted: false,
+  });
+
+  if (existingUser) {
+    throw new AppError(
+      "Email is already registered",
+      409
+    );
+  }
+
+  const username = await generateUserId(
+    "SCHOOL_ADMIN"
+  );
+
+  const hashedPassword = await bcrypt.hash(
+    password,
+    12
+  );
+
+  const schoolAdmin = await User.create({
+    fullName: fullName.trim(),
+
+    username,
+
+    email: normalizedEmail,
+
+    phone: phone?.trim() || null,
+
+    password: hashedPassword,
+
+    role: "SCHOOL_ADMIN",
+
+    isActive: true,
+
+    isDeleted: false,
+
+    lastLogin: null,
+  });
+
+  const safeUser = schoolAdmin.toObject();
+
+  delete safeUser.password;
+
+  return safeUser;
+};
+
+/**
  * Register a parent account.
  *
  * Student verification will be connected when
@@ -229,8 +304,33 @@ export const getUserById = async (userId) => {
     //UPDATE a user data - by ADMIN only
 export const updateUser = async (
   userId,
-  updateData
+  updateData,
+  requester
 ) => {
+  const targetUser = await User.findOne({
+    _id: userId,
+    isDeleted: false,
+  });
+
+  if (!targetUser) {
+    throw new AppError(
+      "User not found",
+      404
+    );
+  }
+
+  if (
+    requester.role === "SCHOOL_ADMIN" &&
+    !["STUDENT", "TEACHER"].includes(
+      targetUser.role
+    )
+  ) {
+    throw new AppError(
+      "You do not have permission to manage this user",
+      403
+    );
+  }
+
   const allowedFields = [
     "fullName",
     "email",
@@ -252,7 +352,9 @@ export const updateUser = async (
   }
 
   if (updates.email) {
-    updates.email = updates.email.toLowerCase();
+    updates.email = updates.email
+      .trim()
+      .toLowerCase();
 
     const existingUser = await User.findOne({
       email: updates.email,
@@ -268,92 +370,103 @@ export const updateUser = async (
     }
   }
 
-  const user = await User.findOneAndUpdate(
-    {
-      _id: userId,
-      isDeleted: false,
-    },
-    {
-      $set: updates,
-    },
-    {
-      new: true,
-      runValidators: true,
-    }
-  ).select("-password");
+  Object.assign(targetUser, updates);
 
-  if (!user) {
-    throw new AppError(
-      "User not found",
-      404
-    );
-  }
+  await targetUser.save();
 
-  return user;
+  const safeUser = targetUser.toObject();
+
+  delete safeUser.password;
+
+  return safeUser;
 };
 
     // Activate/ Deactivate User - by ADMIN only
 export const updateUserStatus = async (
   userId,
-  isActive
+  isActive,
+  requester
 ) => {
-  const user = await User.findOneAndUpdate(
-    {
-      _id: userId,
-      isDeleted: false,
-    },
-    {
-      $set: {
-        isActive,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password");
+  const targetUser = await User.findOne({
+    _id: userId,
+    isDeleted: false,
+  });
 
-  if (!user) {
+  if (!targetUser) {
     throw new AppError(
       "User not found",
       404
     );
   }
 
-  return user;
+  if (
+    requester.role === "SCHOOL_ADMIN" &&
+    !["STUDENT", "TEACHER"].includes(
+      targetUser.role
+    )
+  ) {
+    throw new AppError(
+      "You do not have permission to manage this user",
+      403
+    );
+  }
+
+  targetUser.isActive = isActive;
+
+  await targetUser.save();
+
+  const safeUser = targetUser.toObject();
+
+  delete safeUser.password;
+
+  return safeUser;
 };
-
     //Soft DELETE User by SYSTEM_ADMIN
-export const deleteUser = async (userId) => {
-  const user = await User.findOneAndUpdate(
-    {
-      _id: userId,
-      isDeleted: false,
-    },
-    {
-      $set: {
-        isDeleted: true,
-        isActive: false,
-        deletedAt: new Date(),
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password");
+export const deleteUser = async (
+  userId,
+  requester
+) => {
+  const targetUser = await User.findOne({
+    _id: userId,
+    isDeleted: false,
+  });
 
-  if (!user) {
+  if (!targetUser) {
     throw new AppError(
       "User not found",
       404
     );
   }
 
-  return user;
+  if (
+    requester.role === "SCHOOL_ADMIN" &&
+    !["STUDENT", "TEACHER"].includes(
+      targetUser.role
+    )
+  ) {
+    throw new AppError(
+      "You do not have permission to archive this user",
+      403
+    );
+  }
+
+  targetUser.isDeleted = true;
+  targetUser.isActive = false;
+  targetUser.deletedAt = new Date();
+
+  await targetUser.save();
+
+  const safeUser = targetUser.toObject();
+
+  delete safeUser.password;
+
+  return safeUser;
 };
 
 export default {
   createStudent,
   createTeacher,
+  createSchoolAdmin,
   registerParent,
   getAllUsers,
   getUserById,

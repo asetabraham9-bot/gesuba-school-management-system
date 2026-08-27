@@ -3,6 +3,7 @@ import express from "express";
 import {
   createStudentController,
   createTeacherController,
+  createSchoolAdminController,
   getAllUsersController,
   getUserByIdController,
   updateUserController,
@@ -27,6 +28,12 @@ router.post(
   "/teachers",
   authorize("SCHOOL_ADMIN", "SYSTEM_ADMIN"),
   createTeacherController
+);
+
+router.post(
+  "/school-admins",
+  authorize("SYSTEM_ADMIN"),
+  createSchoolAdminController
 );
 
 router.get(
