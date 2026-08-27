@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import userRoutes from "./modules/users/user.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import studentRoutes from "./modules/students/student.routes.js";
+import teacherRoutes from "./modules/teachers/teacher.routes.js";
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/teachers", teacherRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {
