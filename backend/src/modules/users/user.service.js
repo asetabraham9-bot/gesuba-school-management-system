@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 
+import AppError from "../../utils/AppError.js";
 import User from "./user.model.js";
 import generateUserId from "./user-id.service.js";
 import { USER_ROLES } from "./user.constants.js";
@@ -148,8 +149,215 @@ const sanitizeUser = (user) => {
   return userObject;
 };
 
+    // GET all users of the system - by ADMIN only
+export const getAllUsers = async ({ role, isActive, search, page = 1, limit = 20,}) => {
+  const query = {
+    isDeleted: false,
+  };
+
+  if (role) {
+    query.role = role;
+  }
+
+  if (typeof isActive !== "undefined") {
+    query.isActive = isActive === "true";
+  }
+
+  if (search) {
+    query.$or = [
+      {
+        fullName: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+      {
+        username: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+      {
+        email: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+    ];
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [users, totalUsers] = await Promise.all([
+    User.find(query)
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit)),
+
+    User.countDocuments(query),
+  ]);
+
+  return {
+    users,
+    pagination: {
+      currentPage: Number(page),
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+      limit: Number(limit),
+    },
+  };
+};
+
+    //GET individual user by its username - by ADMIN only
+export const getUserById = async (userId) => {
+  const user = await User.findOne({
+    _id: userId,
+    isDeleted: false,
+  }).select("-password");
+
+  if (!user) {
+    throw new AppError(
+      "User not found",
+      404
+    );
+  }
+
+  return user;
+};
+
+    //UPDATE a user data - by ADMIN only
+export const updateUser = async (
+  userId,
+  updateData
+) => {
+  const allowedFields = [
+    "fullName",
+    "email",
+    "phone",
+    "profileImage",
+  ];
+
+  const updates = {};
+
+  for (const field of allowedFields) {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        updateData,
+        field
+      )
+    ) {
+      updates[field] = updateData[field];
+    }
+  }
+
+  if (updates.email) {
+    updates.email = updates.email.toLowerCase();
+
+    const existingUser = await User.findOne({
+      email: updates.email,
+      _id: { $ne: userId },
+      isDeleted: false,
+    });
+
+    if (existingUser) {
+      throw new AppError(
+        "Email is already registered",
+        409
+      );
+    }
+  }
+
+  const user = await User.findOneAndUpdate(
+    {
+      _id: userId,
+      isDeleted: false,
+    },
+    {
+      $set: updates,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).select("-password");
+
+  if (!user) {
+    throw new AppError(
+      "User not found",
+      404
+    );
+  }
+
+  return user;
+};
+
+    // Activate/ Deactivate User - by ADMIN only
+export const updateUserStatus = async (
+  userId,
+  isActive
+) => {
+  const user = await User.findOneAndUpdate(
+    {
+      _id: userId,
+      isDeleted: false,
+    },
+    {
+      $set: {
+        isActive,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  if (!user) {
+    throw new AppError(
+      "User not found",
+      404
+    );
+  }
+
+  return user;
+};
+
+    //Soft DELETE User by SYSTEM_ADMIN
+export const deleteUser = async (userId) => {
+  const user = await User.findOneAndUpdate(
+    {
+      _id: userId,
+      isDeleted: false,
+    },
+    {
+      $set: {
+        isDeleted: true,
+        isActive: false,
+        deletedAt: new Date(),
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  if (!user) {
+    throw new AppError(
+      "User not found",
+      404
+    );
+  }
+
+  return user;
+};
+
 export default {
   createStudent,
   createTeacher,
   registerParent,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  updateUserStatus,
+  deleteUser,
 };
