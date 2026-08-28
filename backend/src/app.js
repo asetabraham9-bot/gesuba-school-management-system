@@ -10,6 +10,7 @@ import subjectRoutes from "./modules/academic/subjects/subject.routes.js";
 import academicYearRoutes from "./modules/academic/academic-years/academicYear.routes.js";
 import enrollmentRoutes from "./modules/enrollments/enrollment.routes.js";
 import academicAssignmentRoutes from "./modules/academic-assignments/academicAssignment.routes.js";
+import lessonRoutes from "./modules/lms/lessons/lesson.routes.js";
 
 const app = express();
 
@@ -34,9 +35,9 @@ app.use("/api/sections", sectionRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/academic-years", academicYearRoutes);
 app.use( "/api/enrollments", enrollmentRoutes);
-app.use( "/api/academic-assignments", academicAssignmentRoutes
+app.use( "/api/academic-assignments", academicAssignmentRoutes);
+app.use( "/api/lms/lessons",lessonRoutes);
 
-);
 // Health check
 app.get("/api/v1/health", (req, res) => {
   res.status(200).json({
