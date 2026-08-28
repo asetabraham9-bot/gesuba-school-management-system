@@ -11,6 +11,7 @@ import academicYearRoutes from "./modules/academic/academic-years/academicYear.r
 import enrollmentRoutes from "./modules/enrollments/enrollment.routes.js";
 import academicAssignmentRoutes from "./modules/academic-assignments/academicAssignment.routes.js";
 import lessonRoutes from "./modules/lms/lessons/lesson.routes.js";
+import materialRoutes from "./modules/lms/materials/material.routes.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/academic-years", academicYearRoutes);
 app.use( "/api/enrollments", enrollmentRoutes);
 app.use( "/api/academic-assignments", academicAssignmentRoutes);
 app.use( "/api/lms/lessons",lessonRoutes);
+app.use( "/api/lms/materials", materialRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {
