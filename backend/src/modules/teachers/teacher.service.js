@@ -1,118 +1,147 @@
-import bcrypt from "bcryptjs";
 import Teacher from "./teacher.model.js";
 import User from "../users/user.model.js";
+import { USER_ROLES } from "../users/user.constants.js";
 
-const generateTeacherUsername = async () => {
-  const lastTeacher = await User.findOne({
-    role: "TEACHER",
-    username: /^GGSS\.TEA\d+$/
-  }).sort({ username: -1 });
+const validateTeacherUser = async (userId) => {
+  const user = await User.findById(userId);
 
-  if (!lastTeacher) {
-    return "GGSS.TEA0001";
+  if (!user) {
+    throw new Error("User not found");
   }
 
-  const lastNumber = parseInt(
-    lastTeacher.username.replace("GGSS.TEA", ""),
-    10
-  );
+  if (user.role !== USER_ROLES.TEACHER) {
+    throw new Error("Selected user is not a teacher");
+  }
 
-  const nextNumber = lastNumber + 1;
-
-  return `GGSS.TEA${String(nextNumber).padStart(4, "0")}`;
+  return user;
 };
 
 export const createTeacher = async (teacherData) => {
   const {
-    fullName,
-    employeeNumber,
+    user,
+    employeeId,
+    qualification,
+    specialization,
     dateOfBirth,
     gender,
-    phone,
     address,
-    qualification,
-    specialization
+    status,
   } = teacherData;
 
-  // Check employee number
+  // Validate User
+  await validateTeacherUser(user);
+
+  // Prevent one User from having multiple Teacher profiles
   const existingTeacher = await Teacher.findOne({
-    employeeNumber
+    user,
   });
 
   if (existingTeacher) {
-    throw new Error("Employee number already exists");
+    throw new Error(
+      "This user is already registered as a teacher"
+    );
   }
 
-  // Generate username
-  const username = await generateTeacherUsername();
+  // Normalize employee ID
+  const normalizedEmployeeId = employeeId
+    .trim()
+    .toUpperCase();
 
-  // Generate temporary password
-  const temporaryPassword = `${username}@123`;
-
-  // Hash password
-  const hashedPassword = await bcrypt.hash(
-    temporaryPassword,
-    10
-  );
-
-  // Create User account
-  const user = await User.create({
-    fullName,
-    username,
-    password: hashedPassword,
-    role: "TEACHER"
+  // Check duplicate employee ID
+  const existingEmployee = await Teacher.findOne({
+    employeeId: normalizedEmployeeId,
   });
 
-  try {
-    // Create Teacher profile
-    const teacher = await Teacher.create({
-      user: user._id,
-      employeeNumber,
-      dateOfBirth,
-      gender,
-      phone,
-      address,
-      qualification,
-      specialization
-    });
-
-    return {
-      teacher,
-      credentials: {
-        username,
-        temporaryPassword
-      }
-    };
-  } catch (error) {
-    // Remove User if Teacher creation fails
-    await User.findByIdAndDelete(user._id);
-
-    throw error;
+  if (existingEmployee) {
+    throw new Error(
+      "Employee ID already exists"
+    );
   }
+
+  const teacher = await Teacher.create({
+    user,
+    employeeId: normalizedEmployeeId,
+    qualification,
+    specialization,
+    dateOfBirth,
+    gender,
+    address,
+    status,
+  });
+
+  return await Teacher.findById(teacher._id).populate(
+    "user",
+    "fullName username email phone role"
+  );
 };
 
 export const getAllTeachers = async () => {
   return await Teacher.find()
-    .populate("user", "fullName username role")
+    .populate(
+      "user",
+      "fullName username email phone role"
+    )
     .sort({ createdAt: -1 });
 };
 
 export const getTeacherById = async (id) => {
-  return await Teacher.findById(id)
-    .populate("user", "fullName username role");
+  return await Teacher.findById(id).populate(
+    "user",
+    "fullName username email phone role"
+  );
 };
 
 export const updateTeacher = async (id, teacherData) => {
+  const teacher = await Teacher.findById(id);
+
+  if (!teacher) {
+    throw new Error("Teacher not found");
+  }
+
+  // Validate new User if provided
+  if (teacherData.user) {
+    await validateTeacherUser(teacherData.user);
+
+    const existingTeacher = await Teacher.findOne({
+      user: teacherData.user,
+      _id: { $ne: id },
+    });
+
+    if (existingTeacher) {
+      throw new Error(
+        "This user is already registered as a teacher"
+      );
+    }
+  }
+
+  // Normalize employee ID
+  if (teacherData.employeeId) {
+    teacherData.employeeId = teacherData.employeeId
+      .trim()
+      .toUpperCase();
+
+    const existingEmployee = await Teacher.findOne({
+      employeeId: teacherData.employeeId,
+      _id: { $ne: id },
+    });
+
+    if (existingEmployee) {
+      throw new Error(
+        "Employee ID already exists"
+      );
+    }
+  }
+
   return await Teacher.findByIdAndUpdate(
     id,
     teacherData,
     {
       new: true,
-      runValidators: true
+      runValidators: true,
     }
   ).populate(
     "user",
-    "fullName username role"
+    "fullName username email phone role"
   );
 };
 
@@ -124,8 +153,6 @@ export const deleteTeacher = async (id) => {
   }
 
   await Teacher.findByIdAndDelete(id);
-
-  await User.findByIdAndDelete(teacher.user);
 
   return teacher;
 };

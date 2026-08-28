@@ -9,36 +9,42 @@ import {
 } from "./teacher.controller.js";
 
 import authenticate from "../../middleware/auth.middleware.js";
+import { authorize } from "../../middleware/role.middleware.js";
 
 const router = express.Router();
 
+const adminOnly = [
+  authenticate,
+  authorize("SYSTEM_ADMIN", "SCHOOL_ADMIN"),
+];
+
 router.post(
   "/",
-  authenticate,
+  ...adminOnly,
   createTeacherController
 );
 
 router.get(
   "/",
-  authenticate,
+  ...adminOnly,
   getAllTeachersController
 );
 
 router.get(
   "/:id",
-  authenticate,
+  ...adminOnly,
   getTeacherByIdController
 );
 
 router.patch(
   "/:id",
-  authenticate,
+  ...adminOnly,
   updateTeacherController
 );
 
 router.delete(
   "/:id",
-  authenticate,
+  ...adminOnly,
   deleteTeacherController
 );
 

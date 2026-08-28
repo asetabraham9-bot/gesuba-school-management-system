@@ -6,21 +6,29 @@ import {
   deleteTeacher,
 } from "./teacher.service.js";
 
-export const createTeacherController = async (req, res, next) => {
+export const createTeacherController = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const result = await createTeacher(req.body);
+    const teacher = await createTeacher(req.body);
 
     res.status(201).json({
       success: true,
       message: "Teacher created successfully",
-      data: result,
+      data: teacher,
     });
   } catch (error) {
     next(error);
   }
 };
 
-export const getAllTeachersController = async (req, res, next) => {
+export const getAllTeachersController = async (
+  req,
+  res,
+  next
+) => {
   try {
     const teachers = await getAllTeachers();
 
@@ -34,31 +42,14 @@ export const getAllTeachersController = async (req, res, next) => {
   }
 };
 
-export const getTeacherByIdController = async (req, res, next) => {
+export const getTeacherByIdController = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const teacher = await getTeacherById(req.params.id);
-
-    if (!teacher) {
-      return res.status(404).json({
-        success: false,
-        message: "Teacher not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: teacher,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateTeacherController = async (req, res, next) => {
-  try {
-    const teacher = await updateTeacher(
-      req.params.id,
-      req.body
+    const teacher = await getTeacherById(
+      req.params.id
     );
 
     if (!teacher) {
@@ -70,6 +61,26 @@ export const updateTeacherController = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      data: teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTeacherController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const teacher = await updateTeacher(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      success: true,
       message: "Teacher updated successfully",
       data: teacher,
     });
@@ -78,9 +89,15 @@ export const updateTeacherController = async (req, res, next) => {
   }
 };
 
-export const deleteTeacherController = async (req, res, next) => {
+export const deleteTeacherController = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const teacher = await deleteTeacher(req.params.id);
+    const teacher = await deleteTeacher(
+      req.params.id
+    );
 
     res.status(200).json({
       success: true,

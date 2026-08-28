@@ -5,47 +5,39 @@ const teacherSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "User reference is required"],
       unique: true,
     },
 
-    employeeNumber: {
+    employeeId: {
       type: String,
-      required: true,
+      required: [true, "Employee ID is required"],
       unique: true,
       trim: true,
-    },
-
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
-
-    gender: {
-      type: String,
-      enum: ["Male", "Female"],
-      required: true,
-    },
-
-    phone: {
-      type: String,
-      trim: true,
-    },
-
-    address: {
-      type: String,
-      trim: true,
+      uppercase: true,
     },
 
     qualification: {
       type: String,
-      required: true,
       trim: true,
     },
 
     specialization: {
       type: String,
-      required: true,
+      trim: true,
+    },
+
+    dateOfBirth: {
+      type: Date,
+    },
+
+    gender: {
+      type: String,
+      enum: ["MALE", "FEMALE"],
+    },
+
+    address: {
+      type: String,
       trim: true,
     },
 
