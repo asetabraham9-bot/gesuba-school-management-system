@@ -9,17 +9,43 @@ import {
 } from "./student.controller.js";
 
 import authenticate from "../../middleware/auth.middleware.js";
+import { authorize } from "../../middleware/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authenticate, createStudentController);
+const schoolAdminOnly = [
+  authenticate,
+  authorize("SYSTEM_ADMIN", "SCHOOL_ADMIN"),
+];
 
-router.get("/", authenticate, getAllStudentsController);
+router.post(
+  "/",
+  ...schoolAdminOnly,
+  createStudentController
+);
 
-router.get("/:id", authenticate, getStudentByIdController);
+router.get(
+  "/",
+  ...schoolAdminOnly,
+  getAllStudentsController
+);
 
-router.patch("/:id", authenticate, updateStudentController);
+router.get(
+  "/:id",
+  ...schoolAdminOnly,
+  getStudentByIdController
+);
 
-router.delete("/:id", authenticate, deleteStudentController);
+router.patch(
+  "/:id",
+  ...schoolAdminOnly,
+  updateStudentController
+);
+
+router.delete(
+  "/:id",
+  ...schoolAdminOnly,
+  deleteStudentController
+);
 
 export default router;

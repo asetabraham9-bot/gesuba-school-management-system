@@ -5,47 +5,41 @@ const studentSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "User reference is required"],
       unique: true,
     },
 
     admissionNumber: {
       type: String,
-      required: true,
+      required: [true, "Admission number is required"],
       unique: true,
       trim: true,
+      uppercase: true,
+    },
+
+    grade: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Grade",
+      required: [true, "Grade is required"],
+    },
+
+    section: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Section",
+      required: [true, "Section is required"],
     },
 
     dateOfBirth: {
       type: Date,
-      required: true,
     },
 
     gender: {
       type: String,
-      enum: ["Male", "Female"],
-      required: true,
-    },
-
-    phone: {
-      type: String,
-      trim: true,
+      enum: ["MALE", "FEMALE"],
     },
 
     address: {
       type: String,
-      trim: true,
-    },
-
-    grade: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    section: {
-      type: String,
-      required: true,
       trim: true,
     },
 

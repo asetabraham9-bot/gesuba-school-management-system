@@ -6,20 +6,26 @@ import {
   deleteStudent,
 } from "./student.service.js";
 
+/**
+ * Create Student
+ */
 export const createStudentController = async (req, res, next) => {
   try {
-    const result = await createStudent(req.body);
+    const student = await createStudent(req.body);
 
     res.status(201).json({
       success: true,
       message: "Student created successfully",
-      data: result,
+      data: student,
     });
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * Get All Students
+ */
 export const getAllStudentsController = async (req, res, next) => {
   try {
     const students = await getAllStudents();
@@ -34,6 +40,9 @@ export const getAllStudentsController = async (req, res, next) => {
   }
 };
 
+/**
+ * Get Student By ID
+ */
 export const getStudentByIdController = async (req, res, next) => {
   try {
     const student = await getStudentById(req.params.id);
@@ -54,19 +63,15 @@ export const getStudentByIdController = async (req, res, next) => {
   }
 };
 
+/**
+ * Update Student
+ */
 export const updateStudentController = async (req, res, next) => {
   try {
     const student = await updateStudent(
       req.params.id,
       req.body
     );
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
-    }
 
     res.status(200).json({
       success: true,
@@ -78,6 +83,9 @@ export const updateStudentController = async (req, res, next) => {
   }
 };
 
+/**
+ * Delete Student
+ */
 export const deleteStudentController = async (req, res, next) => {
   try {
     const student = await deleteStudent(req.params.id);
