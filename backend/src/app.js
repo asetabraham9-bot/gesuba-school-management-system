@@ -13,6 +13,7 @@ import academicAssignmentRoutes from "./modules/academic-assignments/academicAss
 import lessonRoutes from "./modules/lms/lessons/lesson.routes.js";
 import materialRoutes from "./modules/lms/materials/material.routes.js";
 import assignmentRoutes from "./modules/lms/assignments/assignment.routes.js";
+import studentLmsRoutes from "./modules/lms/student/studentLms.routes.js";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use( "/api/academic-assignments", academicAssignmentRoutes);
 app.use( "/api/lms/lessons",lessonRoutes);
 app.use( "/api/lms/materials", materialRoutes);
 app.use("/api/lms/assignments", assignmentRoutes);
+app.use("/api/lms/student", studentLmsRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {
