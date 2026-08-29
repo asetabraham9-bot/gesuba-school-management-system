@@ -15,6 +15,7 @@ import materialRoutes from "./modules/lms/materials/material.routes.js";
 import assignmentRoutes from "./modules/lms/assignments/assignment.routes.js";
 import studentLmsRoutes from "./modules/lms/student/studentLms.routes.js";
 import submissionRoutes from "./modules/lms/submissions/submission.routes.js";
+import teacherSubmissionRoutes from "./modules/lms/submissions/teacherSubmission.routes.js";
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use( "/api/lms/materials", materialRoutes);
 app.use("/api/lms/assignments", assignmentRoutes);
 app.use("/api/lms/student", studentLmsRoutes);
 app.use("/api/lms/submissions", submissionRoutes);
+app.use("/api/lms/teacher/submissions", teacherSubmissionRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {
