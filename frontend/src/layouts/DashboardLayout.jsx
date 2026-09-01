@@ -1,8 +1,10 @@
+import DashboardShell from "../components/layout/DashboardShell";
+
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <DashboardShell>
       {children}
-    </div>
+    </DashboardShell>
   );
 };
 
