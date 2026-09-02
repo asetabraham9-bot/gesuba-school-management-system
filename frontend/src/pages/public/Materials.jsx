@@ -58,7 +58,7 @@ const guidanceMaterials = [
   },
 ];
 
-export default function StudyMaterials() {
+export default function Materials() {
   const [selectedGrade, setSelectedGrade] = useState(9);
   const [searchTerm, setSearchTerm] = useState('');
 
