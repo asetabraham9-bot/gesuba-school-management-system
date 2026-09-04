@@ -17,6 +17,7 @@ import ParentSignup from "../pages/auth/ParentSignup";
 import ProtectedRoute from "./ProtectedRoute";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 
+  {/*Student dashboard routes */}
 import StudentDashboard from "../pages/dashboards/student/StudentDashboard";
 import StudentAcademic from "../pages/dashboards/student/academic/StudentAcademic";
 import MySubjects from "../pages/dashboards/student/academic/MySubjects";
@@ -34,6 +35,10 @@ import Announcements from "../pages/dashboards/student/announcements/Announcemen
 import Profile from "../pages/dashboards/student/account/Profile";
 import Settings from "../pages/dashboards/student/account/Settings";
 
+  {/*Student dashboard routes */}
+import TeacherDashboard from "../pages/dashboards/teacher/TeacherDashboard";
+import TeacherAcademic from "../pages/dashboards/teacher/academic/TeacherAcademic";
+import AssignedSubjects from "../pages/dashboards/teacher/teaching/AssignedSubjects";
 
 const AppRouter = () => {
   return (
@@ -44,57 +49,32 @@ const AppRouter = () => {
             PUBLIC ROUTES
         ========================================= */}
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
-        <Route
-          path="/about"
-          element={<About />}
-        />
-        <Route
-          path="/clubs"
-          element={<Clubs />}
-        />
-        <Route
-          path="/materials"
-          element={<Materials />}
-        />
-        
-        <Route
-          path="/online-exam"
-          element={<OnlineExam />}
-        />
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />}/>
+        <Route path="/clubs" element={<Clubs />}/>
+        <Route path="/materials" element={<Materials />}/>
+        <Route path="/online-exam" element={<OnlineExam />}/>
+        <Route path="/contact" element={<Contact />}/>
 
         {/* =========================================
             AUTH ROUTES
         ========================================= */}
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/parent-signup"
-          element={<ParentSignup />}
-        />
+        <Route path="/login" element={<Login />}/>
+        <Route path="/parent-signup" element={<ParentSignup />}/>
 
         {/* =========================================
             PROTECTED ROUTES
         ========================================= */}
 
-        <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
 
           {/* =======================================
               STUDENT DASHBOARD SHELL
           ======================================= */}
 
           <Route path="/student-dashboard" element={<DashboardLayout />}>
+
             <Route index element={<StudentDashboard />} />
 
             {/* Academic */}
@@ -125,6 +105,23 @@ const AppRouter = () => {
             <Route path="settings" element={<Settings />} />
           </Route>
 
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["TEACHER"]} />}>
+
+          {/* =======================================
+              TEACHER DASHBOARD SHELL
+          ======================================= */}
+        
+          <Route path="/teacher-dashboard" element={<DashboardLayout />} >
+
+             <Route index element={<TeacherDashboard/>}/>
+
+            {/* Academic */}
+            <Route path="academic" element={<TeacherAcademic />} />
+            <Route path="subjects" element={<AssignedSubjects />} />
+
+          </Route>
         </Route>
 
       </Routes>
