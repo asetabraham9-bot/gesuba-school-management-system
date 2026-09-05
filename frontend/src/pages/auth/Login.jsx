@@ -18,18 +18,20 @@ import './Auth.css';
  * Example:
  * const API_URL = import.meta.env.VITE_API_URL;
  */
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const ROLE_DASHBOARDS = {
-  Student: '/student-dashboard',
-  Teacher: '/teacher-dashboard',
-  SchoolAdmin: '/schooladmin-dashboard',
-  SystemAdmin: '/systemadmin-dashboard',
-  Parent: '/parent-dashboard',
+  STUDENT: '/student-dashboard',
+  TEACHER: '/teacher-dashboard',
+  SCHOOL_ADMIN: '/schooladmin-dashboard',
+  SYSTEM_ADMIN: '/systemadmin-dashboard',
+  PARENT: '/parent-dashboard',
 };
 
 const getDashboardPath = (role) => {
-  return ROLE_DASHBOARDS[role] || '/';
+  const normalizedRole = role?.trim().toUpperCase();
+
+  return ROLE_DASHBOARDS[normalizedRole] || '/';
 };
 
 export default function Login({ onLogin }) {
@@ -104,7 +106,7 @@ export default function Login({ onLogin }) {
       /*
        * Production backend contract:
        *
-       * POST /auth/login
+       * POST /v1/auth/login
        *
        * Request:
        * {
@@ -125,7 +127,7 @@ export default function Login({ onLogin }) {
        * }
        */
 
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${API_URL}/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,40 +138,53 @@ export default function Login({ onLogin }) {
         }),
       });
 
-      const data = await response.json();
+      const responseText = await response.text();
+
+      let  data;
+
+      data = responseText ? JSON.parse(responseText) : {};
 
       if (!response.ok || !data.success) {
         throw new Error(
           data.message || 'Invalid username or password.'
         );
       }
-
+      
+      const user = data.data?.user;
+      const token = data.data?.token;
       /*
        * JWT is returned by the backend.
        *
        * We keep token storage here temporarily.
        * Later this can be moved into our centralized auth service/context.
        */
-      if (data.token) {
+      if (!token) {
+          throw new Error(
+            'Authentication succeeded, but authentication token is missing.'
+          );
+        }
+
+        if (!user?.role) {
+          throw new Error(
+            'Authentication succeeded, but user role is missing.'
+          );
+        }
+
         const storage = formData.rememberMe
           ? localStorage
           : sessionStorage;
 
-        storage.setItem('ggss_token', data.token);
-      }
+        storage.setItem('ggss_token', token);
+        storage.setItem('ggss_user', JSON.stringify(user));
 
-      if (!data.user?.role) {
-        throw new Error('Authentication succeeded, but user role is missing.');
-      }
+        console.log('Logged-in user:', user);
+        console.log('User role:', user.role);
 
-      /*
-       * onLogin should update the global authenticated-user state.
-       */
-      onLogin?.(data.user);
+        onLogin?.(user);
 
-      const dashboardPath = getDashboardPath(data.user.role);
+        const dashboardPath = getDashboardPath(user.role);
 
-      navigate(dashboardPath, { replace: true });
+        navigate(dashboardPath, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
 

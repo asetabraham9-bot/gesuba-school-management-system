@@ -13,7 +13,7 @@ const navigation = [
   { label: "About", to: "/about" },
   { label: "Clubs", to: "/clubs" },
   { label: "Laboratory", to: "/laboratory" },
-  { label: "Study Materials", to: "/study-materials" },
+  { label: "Study Materials", to: "/materials" },
   { label: "Online Exam", to: "/online-exam" },
   { label: "Contact", to: "/contact" },
 ];

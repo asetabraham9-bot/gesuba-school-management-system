@@ -1,36 +1,44 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ allowedRoles = [] }) => {
   const token =
-    localStorage.getItem("ggss_token") ||
-    sessionStorage.getItem("ggss_token");
+    localStorage.getItem('ggss_token') ||
+    sessionStorage.getItem('ggss_token');
 
   const storedUser =
-    localStorage.getItem("ggss_user") ||
-    sessionStorage.getItem("ggss_user");
-
-  /*
-   * Temporary frontend authentication check.
-   *
-   * Later this will be replaced by our centralized
-   * authentication context/service.
-   */
+    localStorage.getItem('ggss_user') ||
+    sessionStorage.getItem('ggss_user');
 
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  let user = null;
+  let user;
 
   try {
     user = storedUser ? JSON.parse(storedUser) : null;
   } catch (error) {
-    console.error("Invalid stored user data:", error);
+    console.error('Invalid stored user data:', error);
+
+    localStorage.removeItem('ggss_user');
+    sessionStorage.removeItem('ggss_user');
+
+    return <Navigate to="/login" replace />;
   }
 
+  if (!user?.role) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const normalizedUserRole = user.role.trim().toUpperCase();
+
+  const normalizedAllowedRoles = allowedRoles.map((role) =>
+    role.trim().toUpperCase()
+  );
+
   if (
-    allowedRoles.length > 0 &&
-    (!user?.role || !allowedRoles.includes(user.role))
+    normalizedAllowedRoles.length > 0 &&
+    !normalizedAllowedRoles.includes(normalizedUserRole)
   ) {
     return <Navigate to="/" replace />;
   }

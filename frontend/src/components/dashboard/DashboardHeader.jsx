@@ -6,12 +6,33 @@ import {
 
 const DashboardHeader = ({
   onMenuClick,
-  userName = "Student",
-  userRole = "Student",
 }) => {
+  const storedUser =
+    localStorage.getItem("ggss_user") ||
+    sessionStorage.getItem("ggss_user");
+
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (error) {
+    console.error("Invalid stored user:", error);
+  }
+
+  const userName = user?.fullName || "User";
+  const userRole = user?.role
+    ? user.role
+        .toLowerCase()
+        .split("_")
+        .map(
+          (word) =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        )
+        .join(" ")
+    : "User";
+
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
-      {/* Left side */}
       <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
@@ -36,7 +57,6 @@ const DashboardHeader = ({
         </div>
       </div>
 
-      {/* Right side */}
       <div className="flex items-center gap-2 sm:gap-4">
         <button
           type="button"
@@ -71,4 +91,3 @@ const DashboardHeader = ({
 };
 
 export default DashboardHeader;
-
