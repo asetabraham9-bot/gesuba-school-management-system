@@ -258,36 +258,52 @@ export const getMySubmissions = async (
       currentUser._id
     );
 
-  return Submission.find({
-    student: student._id,
-  })
-    .populate({
-      path: "assignment",
-      populate: {
-        path: "lesson",
-        populate: {
-          path: "academicAssignment",
-          populate: [
-            {
-              path: "subject",
-              select: "name code",
-            },
-            {
-              path: "teacher",
-              populate: {
-                path: "user",
-                select:
-                  "fullName username",
-              },
-            },
-          ],
-        },
-      },
+  const submissions =
+    await Submission.find({
+      student: student._id,
     })
-    .sort({
-      submittedAt: -1,
-    });
+      .populate({
+        path: "assignment",
+        select:
+          "title description totalMarks dueDate status",
+        populate: {
+          path: "lesson",
+          select: "title",
+          populate: {
+            path: "academicAssignment",
+            select: "subject teacher grade section",
+            populate: [
+              {
+                path: "subject",
+                select: "name code",
+              },
+              {
+                path: "teacher",
+                populate: {
+                  path: "user",
+                  select:
+                    "fullName username",
+                },
+              },
+              {
+                path: "grade",
+                select: "name",
+              },
+              {
+                path: "section",
+                select: "name",
+              },
+            ],
+          },
+        },
+      })
+      .sort({
+        submittedAt: -1,
+      });
+
+  return submissions;
 };
+
 //Get My Submission By ID
 export const getMySubmissionById = async (
   submissionId,

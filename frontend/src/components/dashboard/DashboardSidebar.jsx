@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+// Student Navigations
 const studentNavigation = [
   {
     label: "Overview",
@@ -101,6 +102,7 @@ const studentNavigation = [
   },
 ];
 
+// Teacher Navigations
 const teacherNavigation = [
   {
     label: "Overview",

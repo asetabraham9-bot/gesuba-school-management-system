@@ -11,3 +11,4 @@ node_modules/
 
 # Re-include important file
 !important.log
+nackend/src/scripts
