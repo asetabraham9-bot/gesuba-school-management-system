@@ -174,12 +174,6 @@ const teacherNavigation = [
   },
 
   {
-    label: "Announcements",
-    path: "/teacher-dashboard/announcements",
-    icon: Megaphone,
-  },
-
-  {
     label: "Account",
     icon: UserRound,
     children: [

@@ -51,6 +51,9 @@ import CreateExamination from "../pages/dashboards/teacher/examinations/CreateEx
 import ExaminationQuestions from "../pages/dashboards/teacher/examinations/ExaminationQuestions";
 import ExaminationReview from "../pages/dashboards/teacher/examinations/ExaminationReview";
 import TeacherExaminationResults from "../pages/dashboards/teacher/examinations/TeacherExaminationResults";
+import TeacherAttendance from "../pages/dashboards/teacher/attendance/TeacherAttendance";
+import TeacherProfile from "../pages/dashboards/teacher/account/TeacherProfile";
+import TeacherSettings from "../pages/dashboards/teacher/account/TeacherSettings";
 
   {/*Teacher dashboard routes */}
 
@@ -132,12 +135,18 @@ const AppRouter = () => {
             <Route path="assignments" element={<TeacherAssignments />}/>
             <Route path="submissions" element={<TeacherSubmissions />} />
             <Route path="submissions/:submissionId/grade" element={<TeacherGrading />}/>
+            {/* Examinations */}
             <Route path="examinations" element={<TeacherExaminations />}/>
             <Route path="examinations/create" element={<CreateExamination />}/>
             <Route path="examinations/create/questions" element={<ExaminationQuestions  />}/>
             <Route path="examinations/create/review" element={<ExaminationReview   />}/>
             <Route path="results" element={<TeacherExaminationResults />}/>
-
+            {/* Attendance */}
+            <Route path="attendance" element={<TeacherAttendance/>}/>
+            {/* Account */}
+            <Route path="profile" element={<TeacherProfile />} />
+            <Route path="settings" element={<TeacherSettings />} />
+          
 
           </Route>
         </Route>
