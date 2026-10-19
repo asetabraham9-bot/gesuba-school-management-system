@@ -57,6 +57,9 @@ import TeacherSettings from "../pages/dashboards/teacher/account/TeacherSettings
 
   {/*Parent dashboard routes */}
 import ParentDashboard from "../pages/dashboards/parent/ParentDashboard";
+import MyChildren from "../pages/dashboards/parent/children/MyChildren";
+import AcademicProgress from "../pages/dashboards/parent/academic/AcademicProgress";
+
 
 const AppRouter = () => {
   return (
@@ -156,7 +159,9 @@ const AppRouter = () => {
           <Route path="/parent-dashboard" element={<DashboardLayout />} >
 
             <Route index element={<ParentDashboard/>}/>
-          
+
+            <Route path="children" element={<MyChildren/>} />
+            <Route path="academic" element={<AcademicProgress />} />
           </Route>
 
         </Route>
