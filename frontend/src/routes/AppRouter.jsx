@@ -55,8 +55,8 @@ import TeacherAttendance from "../pages/dashboards/teacher/attendance/TeacherAtt
 import TeacherProfile from "../pages/dashboards/teacher/account/TeacherProfile";
 import TeacherSettings from "../pages/dashboards/teacher/account/TeacherSettings";
 
-  {/*Teacher dashboard routes */}
-
+  {/*Parent dashboard routes */}
+import ParentDashboard from "../pages/dashboards/parent/ParentDashboard";
 
 const AppRouter = () => {
   return (
@@ -146,10 +146,21 @@ const AppRouter = () => {
             {/* Account */}
             <Route path="profile" element={<TeacherProfile />} />
             <Route path="settings" element={<TeacherSettings />} />
-          
-
           </Route>
+
         </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["PARENT"]} />}>
+
+          {/* PARENT DASHBOARD SHELL */}
+          <Route path="/parent-dashboard" element={<DashboardLayout />} >
+
+            <Route index element={<ParentDashboard/>}/>
+          
+          </Route>
+
+        </Route>
+
 
       </Routes>
     </BrowserRouter>

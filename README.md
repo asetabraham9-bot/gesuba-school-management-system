@@ -216,3 +216,44 @@ src/
             └── account/
                 ├── TeacherProfile.jsx
                 └── TeacherSettings.jsx
+
+# Parent Dashboard UI design and development procedure with Mockdata 
+
+P1. Parent foundation: folders, dashboard page, navigation, role-based routes, and header integration.
+
+
+
+P2. Child overview: display linked children and a student selector if the parent has multiple children.
+
+
+
+P3. Academic monitoring: grades, attendance, assignments, and examination results.
+
+
+
+P4. Communication: school announcements and teacher-related information.
+
+
+
+P5. Account: profile and settings, designed with the eventual shared account-page architecture in mind.
+
+the Parent folder structure
+Inside src/pages/dashboards/
+
+parent/
+├── ParentDashboard.jsx
+├── children/
+│   └── MyChildren.jsx
+├── academic/
+│   └── ParentAcademic.jsx
+├── attendance/
+│   └── ParentAttendance.jsx
+├── assignments/
+│   └── ParentAssignments.jsx
+├── examinations/
+│   └── ParentExaminationResults.jsx
+├── announcements/
+│   └── ParentAnnouncements.jsx
+└── account/
+    ├── ParentProfile.jsx
+    └── ParentSettings.jsx

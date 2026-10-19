@@ -8,10 +8,13 @@ import {
   FileText,
   GraduationCap,
   LayoutDashboard,
+  CalendarCheck,
   LogOut,
   Megaphone,
+  Users,
   UserRound,
   UsersRound,
+  Settings,
   X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -189,9 +192,59 @@ const teacherNavigation = [
   },
 ];
 
+// Parent Navigations
+const parentNavigation = [
+  {
+    label: "Overview",
+    path: "/parent-dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "My Children",
+    path: "/parent-dashboard/children",
+    icon: Users,
+  },
+  {
+    label: "Academic Progress",
+    path: "/parent-dashboard/academic",
+    icon: GraduationCap,
+  },
+  {
+    label: "Attendance",
+    path: "/parent-dashboard/attendance",
+    icon: CalendarCheck,
+  },
+  {
+    label: "Assignments",
+    path: "/parent-dashboard/assignments",
+    icon: BookOpen,
+  },
+  {
+    label: "Examination Results",
+    path: "/parent-dashboard/examinations",
+    icon: ClipboardList,
+  },
+  {
+    label: "Announcements",
+    path: "/parent-dashboard/announcements",
+    icon: Megaphone,
+  },
+  {
+    label: "My Profile",
+    path: "/parent-dashboard/profile",
+    icon: UserRound,
+  },
+  {
+    label: "Settings",
+    path: "/parent-dashboard/settings",
+    icon: Settings,
+  },
+];
+
 const navigationByRole = {
   STUDENT: studentNavigation,
   TEACHER: teacherNavigation,
+  PARENT: parentNavigation,
 };
 
 const portalLabels = {
