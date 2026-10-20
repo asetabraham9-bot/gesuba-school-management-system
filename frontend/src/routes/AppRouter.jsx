@@ -61,6 +61,7 @@ import MyChildren from "../pages/dashboards/parent/children/MyChildren";
 import AcademicProgress from "../pages/dashboards/parent/academic/AcademicProgress";
 import ParentAttendance from "../pages/dashboards/parent/attendance/ParentAttendance";
 import ParentAssignments from "../pages/dashboards/parent/assignments/ParentAssignments";
+import ExaminationResults from "../pages/dashboards/parent/examinations/ExaminationResults";
 
 
 const AppRouter = () => {
@@ -166,6 +167,7 @@ const AppRouter = () => {
             <Route path="academic" element={<AcademicProgress />} />
             <Route path="attendance" element={<ParentAttendance />} />
             <Route path="assignments" element={<ParentAssignments />} />
+            <Route path="examinations" element={<ExaminationResults />} />
             
           </Route>
 
