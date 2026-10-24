@@ -63,6 +63,8 @@ import ParentAttendance from "../pages/dashboards/parent/attendance/ParentAttend
 import ParentAssignments from "../pages/dashboards/parent/assignments/ParentAssignments";
 import ExaminationResults from "../pages/dashboards/parent/examinations/ExaminationResults";
 import ParentAnnouncements from "../pages/dashboards/parent/announcements/ParentAnnouncements";
+import ParentProfile from "../pages/dashboards/parent/profile/ParentProfile";
+import ParentSettings from "../pages/dashboards/parent/settings/ParentSettings";
 
 
 const AppRouter = () => {
@@ -170,6 +172,8 @@ const AppRouter = () => {
             <Route path="assignments" element={<ParentAssignments />} />
             <Route path="examinations" element={<ExaminationResults />} />
             <Route path="announcements" element={<ParentAnnouncements  />} />
+            <Route path="profile" element={<ParentProfile />} />
+            <Route path="settings" element={<ParentSettings />} />
             
           </Route>
 
