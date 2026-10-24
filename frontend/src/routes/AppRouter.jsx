@@ -68,6 +68,7 @@ import ParentSettings from "../pages/dashboards/parent/settings/ParentSettings";
 
   {/*Parent dashboard routes */}
 import SchoolAdminDashboard from "../pages/dashboards/schooladmin/SchoolAdminDashboard";
+import StudentDirectory from "../pages/dashboards/schooladmin/StudentDirectory";
 
 const AppRouter = () => {
   return (
@@ -187,7 +188,8 @@ const AppRouter = () => {
             <Route path="/schooladmin-dashboard" element={<DashboardLayout />} >
 
             <Route index element={<SchoolAdminDashboard />} />
-            
+            <Route path="students" element={<StudentDirectory />} />
+
           </Route>
         </Route>
 
