@@ -1,11 +1,13 @@
 import {
   //Award,
   BookOpen,
+  Building2,
   //BookMarked,
   CalendarDays,
   ClipboardCheck,
   ClipboardList,
   FileText,
+  FileBarChart,
   GraduationCap,
   LayoutDashboard,
   CalendarCheck,
@@ -16,6 +18,8 @@ import {
   UsersRound,
   Settings,
   X,
+  
+  
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -241,10 +245,98 @@ const parentNavigation = [
   },
 ];
 
+
+// School Admin Navigation
+const schoolAdminNavigation = [
+  {
+    label: "Overview",
+    path: "/schooladmin-dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Students",
+    path: "/schooladmin-dashboard/students",
+    icon: Users,
+  },
+  {
+    label: "Teachers",
+    path: "/schooladmin-dashboard/teachers",
+    icon: GraduationCap,
+  },
+  {
+    label: "Academic Structure",
+    icon: Building2,
+    children: [
+      {
+        label: "Academic Years & Terms",
+        path: "/schooladmin-dashboard/academic-years",
+      },
+      {
+        label: "Grades",
+        path: "/schooladmin-dashboard/grades",
+      },
+      {
+        label: "Sections",
+        path: "/schooladmin-dashboard/sections",
+      },
+      {
+        label: "Subjects",
+        path: "/schooladmin-dashboard/subjects",
+      },
+    ],
+  },
+  {
+    label: "Teacher Assignments",
+    path: "/schooladmin-dashboard/teacher-assignments",
+    icon: ClipboardCheck,
+  },
+  {
+    label: "Teaching & Learning",
+    path: "/schooladmin-dashboard/teaching-learning",
+    icon: BookOpen,
+  },
+  {
+    label: "Parent Directory",
+    path: "/schooladmin-dashboard/parents",
+    icon: UsersRound,
+  },
+  {
+    label: "Attendance",
+    path: "/schooladmin-dashboard/attendance",
+    icon: CalendarCheck,
+  },
+  {
+    label: "Examinations & Results",
+    path: "/schooladmin-dashboard/examinations",
+    icon: ClipboardList,
+  },
+  {
+    label: "Announcements",
+    path: "/schooladmin-dashboard/announcements",
+    icon: Megaphone,
+  },
+  {
+    label: "Reports",
+    path: "/schooladmin-dashboard/reports",
+    icon: FileBarChart,
+  },
+  {
+    label: "My Profile",
+    path: "/schooladmin-dashboard/profile",
+    icon: UserRound,
+  },
+  {
+    label: "Settings",
+    path: "/schooladmin-dashboard/settings",
+    icon: Settings,
+  },
+];
+
 const navigationByRole = {
   STUDENT: studentNavigation,
   TEACHER: teacherNavigation,
   PARENT: parentNavigation,
+  SCHOOL_ADMIN: schoolAdminNavigation,
 };
 
 const portalLabels = {

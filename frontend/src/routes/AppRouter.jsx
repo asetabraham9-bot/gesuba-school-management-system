@@ -66,6 +66,8 @@ import ParentAnnouncements from "../pages/dashboards/parent/announcements/Parent
 import ParentProfile from "../pages/dashboards/parent/profile/ParentProfile";
 import ParentSettings from "../pages/dashboards/parent/settings/ParentSettings";
 
+  {/*Parent dashboard routes */}
+import SchoolAdminDashboard from "../pages/dashboards/schooladmin/SchoolAdminDashboard";
 
 const AppRouter = () => {
   return (
@@ -177,6 +179,16 @@ const AppRouter = () => {
             
           </Route>
 
+        </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={["SCHOOL_ADMIN"]} />}>
+
+            {/* PARENT DASHBOARD SHELL */}
+            <Route path="/schooladmin-dashboard" element={<DashboardLayout />} >
+
+            <Route index element={<SchoolAdminDashboard />} />
+            
+          </Route>
         </Route>
 
 
